@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-        <title>task #4 - OKTIOKTIOKTI</title>
+        <title>laboratory-work - OKTIOKTIOKTI</title>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -74,7 +74,7 @@
             </li>
             <li class="drac-box">
                 <a href="../.."
-                    class=" active 
+                    class="
                     drac-anchor btn-toggle d-inline-flex align-items-center border-0 drac-text-purple--hover collapsed"
                     data-bs-toggle="collapse" data-bs-target="#lr1-collapse" aria-expanded="false">
                     Lr1
@@ -83,7 +83,7 @@
                     <ul class="mb-5 drac-list drac-list-none">
                             
     <li class="drac-box-ternary">
-        <a href="../task_%231/"
+        <a href="../../Lr1-report/task_%231/"
             class="
             drac-anchor d-inline-flex align-items-center border-0 drac-text-purple--hover">
             task #1
@@ -91,7 +91,7 @@
     </li>
                             
     <li class="drac-box-ternary">
-        <a href="../task_%232/"
+        <a href="../../Lr1-report/task_%232/"
             class="
             drac-anchor d-inline-flex align-items-center border-0 drac-text-purple--hover">
             task #2
@@ -99,7 +99,7 @@
     </li>
                             
     <li class="drac-box-ternary">
-        <a href="../task_%233/"
+        <a href="../../Lr1-report/task_%233/"
             class="
             drac-anchor d-inline-flex align-items-center border-0 drac-text-purple--hover">
             task #3
@@ -107,8 +107,8 @@
     </li>
                             
     <li class="drac-box-ternary">
-        <a href="./"
-            class=" active 
+        <a href="../../Lr1-report/task_%234/"
+            class="
             drac-anchor d-inline-flex align-items-center border-0 drac-text-purple--hover">
             task #4
         </a>
@@ -118,7 +118,7 @@
             </li>
             <li class="drac-box">
                 <a href="../.."
-                    class="
+                    class=" active 
                     drac-anchor btn-toggle d-inline-flex align-items-center border-0 drac-text-purple--hover collapsed"
                     data-bs-toggle="collapse" data-bs-target="#lr2-collapse" aria-expanded="false">
                     Lr2
@@ -127,8 +127,8 @@
                     <ul class="mb-5 drac-list drac-list-none">
                             
     <li class="drac-box-ternary">
-        <a href="../../Lr2-report/%D0%9E%D1%82%D1%87%D0%B5%D1%82/"
-            class="
+        <a href="./"
+            class=" active 
             drac-anchor d-inline-flex align-items-center border-0 drac-text-purple--hover">
             laboratory-work
         </a>
@@ -192,13 +192,13 @@
         <div class="container">
             <div class="row row-preview">
                 <div class="col">
-                    <a href="../task_%233/"
+                    <a href="../../Lr1-report/task_%234/"
                         class="btn-preview drac-btn drac-btn-outline drac-text-white drac-text-cyan-green--hover">
                         <i class="fa fa-arrow-left"></i> Previous
                     </a>
                 </div>
                 <div class="col">
-                    <a href="../../Lr2-report/%D0%9E%D1%82%D1%87%D0%B5%D1%82/"
+                    <a href="../../Lr3-practice-report/%D0%9E%D1%82%D1%87%D0%B5%D1%82/"
                         class="btn-preview drac-btn drac-btn-outline drac-text-white drac-text-cyan-green--hover" style="padding-left: 3%;">
                         Next <i class="fa fa-arrow-right"></i>
                     </a>
@@ -235,92 +235,70 @@
             <!-- block content -->
                 <section class="p-md-5 section-content">
     <article>
-        <p><h1 id="4">Задание 4</h1>
-<h2 id="_1">Суть задания</h2>
-<p>Реализовать двухпользовательский или многопользовательский чат. Для максимального количества баллов реализуйте многопользовательский чат</p>
-<p><strong>Требования</strong>:
-- Обязательно использовать библиотеку socket
-- Для многопользовательского чата необходимо использовать библиотеку threading</p>
-<h2 id="_2">Код программы</h2>
-<h3 id="_3">Клиент</h3>
-<pre><code class="language-python">import socket
-import threading
-
-PORT = 1313
-SERVER = socket.gethostbyname(socket.gethostname())
-ADDR = (SERVER, PORT)
-FORMAT = 'utf-8'
-BUFFER_SIZE = 1024
-
-
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client.connect(ADDR)
-
-def client_receive():
-    while True:
-        try:
-            message = client.recv(BUFFER_SIZE).decode()
-            print(message)
-        except:
-            print('Error')
-            client.close()
-            break
-
-def client_send():
-    while True:
-        message = f'{input()}'
-        client.send(message.encode(FORMAT))
-
-receive_thread = threading.Thread(target=client_receive)
-receive_thread.start()
-
-send_thread = threading.Thread(target=client_send)
-send_thread.start()
-</code></pre>
-<h3 id="_4">Сервер</h3>
-<pre><code class="language-python">import socket
-import threading
-
-PORT = 1313
-SERVER = socket.gethostbyname(socket.gethostname())
-ADDR = (SERVER, PORT)
-FORMAT = 'utf-8'
-BUFFER_SIZE = 1024
-
-server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server.bind(ADDR)
-server.listen()
-clients = []
-
-def broadcast(message):
-    for client in clients:
-        client.send(message)
-
-def handle_client(client):
-    while True:
-        try:
-            message = client.recv(BUFFER_SIZE)
-            broadcast(message)
-        except:
-            index = clients.index(client)
-            clients.remove(client)
-            client.close()
-            break
-
-def receive():
-    while True:
-        print('Server is running and listening...')
-        client, addr = server.accept()
-        print(f'Connection is established with {str(addr)}')
-        clients.append(client)
-        broadcast(f'{str(addr)} has entered the room'.encode(FORMAT))
-        client.send('You are now connected'.encode(FORMAT))
-        thread = threading.Thread(target=handle_client, args=(client,))
-        thread.start()
-
-if __name__ == &quot;__main__&quot;:
-    receive()
-</code></pre></p>
+        <p><h1 id="_1">Отчет по реализации системы бронирования авиабилетов</h1>
+<h2 id="_2">Задание</h2>
+<p>Реализовать функционал для системы бронирования авиабилетов с возможностью:
+- регистрации и авторизации пользователей;
+- просмотра и бронирования мест на рейсы;
+- управления бронированиями, включая редактирование и удаление;
+- добавления и просмотра отзывов к рейсам;
+- отображения пассажиров на каждом рейсе для администратора.</p>
+<h2 id="_3">Структура проекта</h2>
+<h3 id="_4">Модели</h3>
+<ol>
+<li>
+<p><strong>Flight</strong> - Модель для хранения данных о рейсе.</p>
+<ul>
+<li>Поля: <code>airline</code>, <code>flight_number</code>, <code>departure_city</code>, <code>arrival_city</code>, <code>departure_time</code>, <code>arrival_time</code>, <code>gate_number</code>, <code>flight_type</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Reservation</strong> - Модель для хранения данных о бронировании.</p>
+<ul>
+<li>Поля: <code>user</code>, <code>flight</code>, <code>seat_number</code>, <code>reservation_date</code>.</li>
+<li>Связи: внешний ключ <code>user</code> связывает бронирование с пользователем, <code>flight</code> указывает на рейс.</li>
+</ul>
+</li>
+<li>
+<p><strong>Passenger</strong> - Модель для хранения данных о пассажирах.</p>
+<ul>
+<li>Поля: <code>reservation</code>, <code>first_name</code>, <code>last_name</code>, <code>ticket_number</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Review</strong> - Модель для хранения отзывов о рейсе.</p>
+<ul>
+<li>Поля: <code>flight</code>, <code>user</code>, <code>review_date</code>, <code>comment</code>, <code>rating</code>.</li>
+</ul>
+</li>
+</ol>
+<h3 id="_5">Формы</h3>
+<ol>
+<li><strong>UserRegistrationForm</strong> - форма регистрации нового пользователя с использованием <code>UserCreationForm</code>.</li>
+<li><strong>ReservationForm</strong> - форма для бронирования места на рейсе.</li>
+<li><strong>ReviewForm</strong> - форма для добавления отзыва.</li>
+</ol>
+<h3 id="_6">Представления</h3>
+<ol>
+<li><strong>register</strong> - Регистрация пользователя.</li>
+<li><strong>profile</strong> - Отображение профиля пользователя, где видны его бронирования.</li>
+<li><strong>flight_list</strong> - Отображение доступных рейсов.</li>
+<li><strong>reserve_seat</strong> - Бронирование места на рейс.</li>
+<li><strong>edit_reservation</strong> - Редактирование бронирования.</li>
+<li><strong>delete_reservation</strong> - Удаление бронирования.</li>
+<li><strong>flight_passengers</strong> - Отображение списка пассажиров на рейсе.</li>
+<li><strong>add_review</strong> - Добавление отзыва к рейсу.</li>
+</ol>
+<h3 id="url-">URL-маршруты</h3>
+<p>```python
+urlpatterns = [
+    path('', home, name='home'),  # Домашняя страница
+    path('register/', register, name='register'),
+    path('flights/', flight_list, name='flight_list'),
+    path('flights/<int:flight_id>/reserve/', reserve_seat, name='reserve_seat'),
+    path('reservations/<int:reservation_id>/edit/', edit_reservation, name='edit_reservation'),
+    path('reservations/<int:reservation_id>/delete/', delete_reservation, name='delete_reservation'),
+    path('flights/<int:flight_id>/</p></p>
     </article>
 </section>
             <!-- endblock -->

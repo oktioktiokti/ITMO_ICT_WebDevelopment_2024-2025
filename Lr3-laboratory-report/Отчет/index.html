@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-        <title>task #4 - OKTIOKTIOKTI</title>
+        <title>laboratory-work - OKTIOKTIOKTI</title>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -74,7 +74,7 @@
             </li>
             <li class="drac-box">
                 <a href="../.."
-                    class=" active 
+                    class="
                     drac-anchor btn-toggle d-inline-flex align-items-center border-0 drac-text-purple--hover collapsed"
                     data-bs-toggle="collapse" data-bs-target="#lr1-collapse" aria-expanded="false">
                     Lr1
@@ -83,7 +83,7 @@
                     <ul class="mb-5 drac-list drac-list-none">
                             
     <li class="drac-box-ternary">
-        <a href="../task_%231/"
+        <a href="../../Lr1-report/task_%231/"
             class="
             drac-anchor d-inline-flex align-items-center border-0 drac-text-purple--hover">
             task #1
@@ -91,7 +91,7 @@
     </li>
                             
     <li class="drac-box-ternary">
-        <a href="../task_%232/"
+        <a href="../../Lr1-report/task_%232/"
             class="
             drac-anchor d-inline-flex align-items-center border-0 drac-text-purple--hover">
             task #2
@@ -99,7 +99,7 @@
     </li>
                             
     <li class="drac-box-ternary">
-        <a href="../task_%233/"
+        <a href="../../Lr1-report/task_%233/"
             class="
             drac-anchor d-inline-flex align-items-center border-0 drac-text-purple--hover">
             task #3
@@ -107,8 +107,8 @@
     </li>
                             
     <li class="drac-box-ternary">
-        <a href="./"
-            class=" active 
+        <a href="../../Lr1-report/task_%234/"
+            class="
             drac-anchor d-inline-flex align-items-center border-0 drac-text-purple--hover">
             task #4
         </a>
@@ -138,7 +138,7 @@
             </li>
             <li class="drac-box">
                 <a href="../.."
-                    class="
+                    class=" active 
                     drac-anchor btn-toggle d-inline-flex align-items-center border-0 drac-text-purple--hover collapsed"
                     data-bs-toggle="collapse" data-bs-target="#lr3-collapse" aria-expanded="false">
                     Lr3
@@ -155,8 +155,8 @@
     </li>
                             
     <li class="drac-box-ternary">
-        <a href="../../Lr3-laboratory-report/%D0%9E%D1%82%D1%87%D0%B5%D1%82/"
-            class="
+        <a href="./"
+            class=" active 
             drac-anchor d-inline-flex align-items-center border-0 drac-text-purple--hover">
             laboratory-work
         </a>
@@ -192,14 +192,14 @@
         <div class="container">
             <div class="row row-preview">
                 <div class="col">
-                    <a href="../task_%233/"
+                    <a href="../../Lr3-practice-report/%D0%9E%D1%82%D1%87%D0%B5%D1%82/"
                         class="btn-preview drac-btn drac-btn-outline drac-text-white drac-text-cyan-green--hover">
                         <i class="fa fa-arrow-left"></i> Previous
                     </a>
                 </div>
                 <div class="col">
-                    <a href="../../Lr2-report/%D0%9E%D1%82%D1%87%D0%B5%D1%82/"
-                        class="btn-preview drac-btn drac-btn-outline drac-text-white drac-text-cyan-green--hover" style="padding-left: 3%;">
+                    <a 
+                        class="btn-preview drac-btn drac-text-white--hover disabled" style="padding-left: 3%;">
                         Next <i class="fa fa-arrow-right"></i>
                     </a>
                 </div>
@@ -235,91 +235,137 @@
             <!-- block content -->
                 <section class="p-md-5 section-content">
     <article>
-        <p><h1 id="4">Задание 4</h1>
-<h2 id="_1">Суть задания</h2>
-<p>Реализовать двухпользовательский или многопользовательский чат. Для максимального количества баллов реализуйте многопользовательский чат</p>
-<p><strong>Требования</strong>:
-- Обязательно использовать библиотеку socket
-- Для многопользовательского чата необходимо использовать библиотеку threading</p>
-<h2 id="_2">Код программы</h2>
-<h3 id="_3">Клиент</h3>
-<pre><code class="language-python">import socket
-import threading
+        <p><h1 id="3-django-rest-api">Лабораторная работа #3. Реализация серверной части на django rest. Документирование API.</h1>
+<h2 id="_1">Ход работы</h2>
+<p>Было решено выполнить работу на основе задания по созданию системы для диспетчера частной автобусной фирмы.</p>
+<p><img alt="alt text" src="../telegram-cloud-photo-size-2-5348046393572450566-x.jpg" /></p>
+<h3 id="_2">Запросы</h3>
+<p><strong>CRUD-запросы для автобусов</strong></p>
+<pre><code class="language-python"># Все для модели автобуса
+class BusesListAPIView(generics.ListAPIView):
+    serializer_class = BusSerializer
+    queryset = Bus.objects.all()
 
-PORT = 1313
-SERVER = socket.gethostbyname(socket.gethostname())
-ADDR = (SERVER, PORT)
-FORMAT = 'utf-8'
-BUFFER_SIZE = 1024
+class BusesDestroyView(generics.DestroyAPIView):
+    serializer_class = BusSerializer
+    queryset = Bus.objects.all()
+    lookup_field = 'registration_number'
 
-
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client.connect(ADDR)
-
-def client_receive():
-    while True:
-        try:
-            message = client.recv(BUFFER_SIZE).decode()
-            print(message)
-        except:
-            print('Error')
-            client.close()
-            break
-
-def client_send():
-    while True:
-        message = f'{input()}'
-        client.send(message.encode(FORMAT))
-
-receive_thread = threading.Thread(target=client_receive)
-receive_thread.start()
-
-send_thread = threading.Thread(target=client_send)
-send_thread.start()
+class BusesCreateView(generics.CreateAPIView):
+    serializer_class = BusSerializer
+    queryset = Bus.objects.all()
 </code></pre>
-<h3 id="_4">Сервер</h3>
-<pre><code class="language-python">import socket
-import threading
+<p><strong>CRUD-запросы для маршрутов</strong></p>
+<pre><code class="language-python"># Все для модели маршрута
+class RoutesListAPIView(generics.ListAPIView):
+    serializer_class = RouteSerializer
+    queryset = Route.objects.all()
 
-PORT = 1313
-SERVER = socket.gethostbyname(socket.gethostname())
-ADDR = (SERVER, PORT)
-FORMAT = 'utf-8'
-BUFFER_SIZE = 1024
+class RoutesCreateView(generics.CreateAPIView):
+    serializer_class = RouteSerializer
+    queryset = Route.objects.all()
 
-server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server.bind(ADDR)
-server.listen()
-clients = []
+class RoutesDestroyView(generics.DestroyAPIView):
+    serializer_class = RouteSerializer
+    queryset = Route.objects.all()
+    lookup_field = 'route_number'
+</code></pre>
+<p><strong>CRUD-запросы для водителей</strong></p>
+<pre><code class="language-python"># Все для модели водителя
+class DriversListAPIView(generics.ListAPIView):
+    serializer_class = DriverSerializer
+    queryset = Driver.objects.all()
 
-def broadcast(message):
-    for client in clients:
-        client.send(message)
+class DriverCreateView(generics.CreateAPIView):
+    serializer_class = DriverSerializer
+    queryset = Driver.objects.all()
 
-def handle_client(client):
-    while True:
-        try:
-            message = client.recv(BUFFER_SIZE)
-            broadcast(message)
-        except:
-            index = clients.index(client)
-            clients.remove(client)
-            client.close()
-            break
+class DriverDetailView(generics.RetrieveAPIView):
+    serializer_class = DriverSerializer
+    queryset = Driver.objects.all()
+    lookup_field = 'passport_number'
 
-def receive():
-    while True:
-        print('Server is running and listening...')
-        client, addr = server.accept()
-        print(f'Connection is established with {str(addr)}')
-        clients.append(client)
-        broadcast(f'{str(addr)} has entered the room'.encode(FORMAT))
-        client.send('You are now connected'.encode(FORMAT))
-        thread = threading.Thread(target=handle_client, args=(client,))
-        thread.start()
+class DriverUpdateView(generics.UpdateAPIView):
+    serializer_class = DriverSerializer
+    queryset = Driver.objects.all()
+    lookup_field = 'passport_number'
 
-if __name__ == &quot;__main__&quot;:
-    receive()
+class DriverDeleteView(generics.DestroyAPIView):
+    serializer_class = DriverSerializer
+    queryset = Driver.objects.all()
+    lookup_field = 'passport_number'
+</code></pre>
+<p><strong>CRUD-запросы для расписания</strong></p>
+<pre><code class="language-python"># Все для модели расписания
+class SchedulesListAPIView(generics.ListAPIView):
+    serializer_class = ScheduleSerializer
+    queryset = Schedule.objects.all()
+
+class ScheduleCreateView(generics.CreateAPIView):
+    serializer_class = ScheduleSerializer
+    queryset = Schedule.objects.all()
+
+class ScheduleUpdateView(generics.UpdateAPIView):
+    serializer_class = ScheduleSerializer
+    queryset = Schedule.objects.all()
+
+class ScheduleDeleteView(generics.DestroyAPIView):
+    serializer_class = ScheduleSerializer
+    queryset = Schedule.objects.all()
+</code></pre>
+<h3 id="_3">Запросы из задания</h3>
+<p><strong>Отображение водителей по маршруту</strong></p>
+<pre><code class="language-python">class DriversByRouteView(APIView):
+    def get(self, request, route_number):
+        schedules = Schedule.objects.filter(route__route_number=route_number).select_related('driver', 'route')
+        serialized_data = ScheduleSerializer(schedules, many=True).data
+        return Response(serialized_data)
+</code></pre>
+<p><strong>Время начала и конца маршрутов</strong></p>
+<pre><code class="language-python">class RouteTimingView(APIView):
+    def get(self, request):
+        routes = Route.objects.all()
+        data = routes.values('route_number', 'start_time', 'end_time')
+        return Response(data)
+</code></pre>
+<p><strong>Суммарная длительнось всех маршрутов</strong></p>
+<pre><code class="language-python">class TotalRouteDistanceView(APIView):
+    def get(self, request):
+        total_distance = Route.objects.aggregate(total_distance=Sum('duration_minutes'))
+        return Response({'total_distance': total_distance['total_distance']})
+</code></pre>
+<p><strong>Автобусы, которые не выехали на маршрут по конкретной дате</strong></p>
+<pre><code class="language-python">class AbsentBusesView(APIView):
+    def get(self, request, date):
+        incidents = Incident.objects.filter(schedule__work_date=date)
+        serialized_data = IncidentSerializer(incidents, many=True).data
+        return Response(serialized_data)
+</code></pre>
+<p><strong>Количество водителей каждого класса</strong></p>
+<pre><code class="language-python">class DriverCountByClassView(APIView):
+    def get(self, request):
+        driver_counts = Driver.objects.values('driver_class').annotate(count=Count('id'))
+        return Response(driver_counts)
+</code></pre>
+<p><strong>Полный отчет</strong></p>
+<pre><code class="language-python">class FleetReportView(APIView):
+    def get(self, request):
+        bus_types = Bus.objects.values('bus_type').annotate(
+            bus_count=Count('id'),
+            route_count=Count('schedules__route', distinct=True),
+            driver_count=Count('schedules__driver', distinct=True),
+        )
+        total_distance = Route.objects.aggregate(total_distance=Sum('duration_minutes'))
+        driver_stats = Driver.objects.aggregate(
+            avg_age=Avg('experience_years'), total_count=Count('id')
+        )
+        report = {
+            'bus_types': list(bus_types),
+            'total_route_distance': total_distance['total_distance'],
+            'driver_stats': driver_stats,
+        }
+        return Response(report)
+
 </code></pre></p>
     </article>
 </section>
