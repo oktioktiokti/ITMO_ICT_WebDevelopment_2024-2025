@@ -259,134 +259,16 @@
 <h2 id="_1">Ход работы</h2>
 <p>Было решено выполнить работу на основе задания по созданию системы для диспетчера частной автобусной фирмы.</p>
 <p><img alt="alt text" src="../telegram-cloud-photo-size-2-5348046393572450566-x.jpg" /></p>
-<h3 id="_2">Запросы</h3>
-<p><strong>CRUD-запросы для автобусов</strong></p>
-<pre><code class="language-python"># Все для модели автобуса
-class BusesListAPIView(generics.ListAPIView):
-    serializer_class = BusSerializer
-    queryset = Bus.objects.all()
-
-class BusesDestroyView(generics.DestroyAPIView):
-    serializer_class = BusSerializer
-    queryset = Bus.objects.all()
-    lookup_field = 'registration_number'
-
-class BusesCreateView(generics.CreateAPIView):
-    serializer_class = BusSerializer
-    queryset = Bus.objects.all()
-</code></pre>
-<p><strong>CRUD-запросы для маршрутов</strong></p>
-<pre><code class="language-python"># Все для модели маршрута
-class RoutesListAPIView(generics.ListAPIView):
-    serializer_class = RouteSerializer
-    queryset = Route.objects.all()
-
-class RoutesCreateView(generics.CreateAPIView):
-    serializer_class = RouteSerializer
-    queryset = Route.objects.all()
-
-class RoutesDestroyView(generics.DestroyAPIView):
-    serializer_class = RouteSerializer
-    queryset = Route.objects.all()
-    lookup_field = 'route_number'
-</code></pre>
-<p><strong>CRUD-запросы для водителей</strong></p>
-<pre><code class="language-python"># Все для модели водителя
-class DriversListAPIView(generics.ListAPIView):
-    serializer_class = DriverSerializer
-    queryset = Driver.objects.all()
-
-class DriverCreateView(generics.CreateAPIView):
-    serializer_class = DriverSerializer
-    queryset = Driver.objects.all()
-
-class DriverDetailView(generics.RetrieveAPIView):
-    serializer_class = DriverSerializer
-    queryset = Driver.objects.all()
-    lookup_field = 'passport_number'
-
-class DriverUpdateView(generics.UpdateAPIView):
-    serializer_class = DriverSerializer
-    queryset = Driver.objects.all()
-    lookup_field = 'passport_number'
-
-class DriverDeleteView(generics.DestroyAPIView):
-    serializer_class = DriverSerializer
-    queryset = Driver.objects.all()
-    lookup_field = 'passport_number'
-</code></pre>
-<p><strong>CRUD-запросы для расписания</strong></p>
-<pre><code class="language-python"># Все для модели расписания
-class SchedulesListAPIView(generics.ListAPIView):
-    serializer_class = ScheduleSerializer
-    queryset = Schedule.objects.all()
-
-class ScheduleCreateView(generics.CreateAPIView):
-    serializer_class = ScheduleSerializer
-    queryset = Schedule.objects.all()
-
-class ScheduleUpdateView(generics.UpdateAPIView):
-    serializer_class = ScheduleSerializer
-    queryset = Schedule.objects.all()
-
-class ScheduleDeleteView(generics.DestroyAPIView):
-    serializer_class = ScheduleSerializer
-    queryset = Schedule.objects.all()
-</code></pre>
-<h3 id="_3">Запросы из задания</h3>
-<p><strong>Отображение водителей по маршруту</strong></p>
-<pre><code class="language-python">class DriversByRouteView(APIView):
-    def get(self, request, route_number):
-        schedules = Schedule.objects.filter(route__route_number=route_number).select_related('driver', 'route')
-        serialized_data = ScheduleSerializer(schedules, many=True).data
-        return Response(serialized_data)
-</code></pre>
-<p><strong>Время начала и конца маршрутов</strong></p>
-<pre><code class="language-python">class RouteTimingView(APIView):
-    def get(self, request):
-        routes = Route.objects.all()
-        data = routes.values('route_number', 'start_time', 'end_time')
-        return Response(data)
-</code></pre>
-<p><strong>Суммарная длительнось всех маршрутов</strong></p>
-<pre><code class="language-python">class TotalRouteDistanceView(APIView):
-    def get(self, request):
-        total_distance = Route.objects.aggregate(total_distance=Sum('duration_minutes'))
-        return Response({'total_distance': total_distance['total_distance']})
-</code></pre>
-<p><strong>Автобусы, которые не выехали на маршрут по конкретной дате</strong></p>
-<pre><code class="language-python">class AbsentBusesView(APIView):
-    def get(self, request, date):
-        incidents = Incident.objects.filter(schedule__work_date=date)
-        serialized_data = IncidentSerializer(incidents, many=True).data
-        return Response(serialized_data)
-</code></pre>
-<p><strong>Количество водителей каждого класса</strong></p>
-<pre><code class="language-python">class DriverCountByClassView(APIView):
-    def get(self, request):
-        driver_counts = Driver.objects.values('driver_class').annotate(count=Count('id'))
-        return Response(driver_counts)
-</code></pre>
-<p><strong>Полный отчет</strong></p>
-<pre><code class="language-python">class FleetReportView(APIView):
-    def get(self, request):
-        bus_types = Bus.objects.values('bus_type').annotate(
-            bus_count=Count('id'),
-            route_count=Count('schedules__route', distinct=True),
-            driver_count=Count('schedules__driver', distinct=True),
-        )
-        total_distance = Route.objects.aggregate(total_distance=Sum('duration_minutes'))
-        driver_stats = Driver.objects.aggregate(
-            avg_age=Avg('experience_years'), total_count=Count('id')
-        )
-        report = {
-            'bus_types': list(bus_types),
-            'total_route_distance': total_distance['total_distance'],
-            'driver_stats': driver_stats,
-        }
-        return Response(report)
-
-</code></pre></p>
+<h3 id="_2">Страницы</h3>
+<p><img alt="alt text" src="../1.png" />
+<img alt="alt text" src="../2.png" />
+<img alt="alt text" src="../3.png" />
+<img alt="alt text" src="../4.png" />
+<img alt="alt text" src="../5.png" />
+<img alt="alt text" src="../6.png" />
+<img alt="alt text" src="../7.png" />
+<img alt="alt text" src="../8.png" />
+<img alt="alt text" src="../9.png" /></p></p>
     </article>
 </section>
             <!-- endblock -->
