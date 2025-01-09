@@ -263,7 +263,140 @@
             <!-- block content -->
                 <section class="p-md-5 section-content">
     <article>
-        <p></p>
+        <p><h1 id="5">Задание 5</h1>
+<h2 id="_1">Суть задания</h2>
+<p>Написать простой веб-сервер для обработки GET и POST HTTP-запросов с помощью библиотеки socket в Python</p>
+<p><strong>Требования</strong>: 
+Cервер должен:
+- Принять и записать информацию о дисциплине и оценке по дисциплине
+- Отдать информацию обо всех оценках по дисциплинам в виде HTML-страницы</p>
+<h2 id="_2">Код программы</h2>
+<h3 id="indexhtml">index.html</h3>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Grades&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Grades&lt;/h1&gt;
+    &lt;ul id=&quot;grades-list&quot;&gt;&lt;/ul&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<h3 id="serverpy">server.py</h3>
+<pre><code class="language-python">import socket
+from urllib.parse import parse_qs
+
+# Список для хранения оценок
+# Формат: [{&quot;subject&quot;: &quot;Biology&quot;, &quot;grades&quot;: [&quot;4&quot;, &quot;5&quot;]}]
+
+grades = []
+
+
+def load_html_template():
+    try:
+        with open('index.html', 'r', encoding='utf-8') as file:
+            return file.read()
+    except FileNotFoundError:
+        return (&quot;&lt;html&gt;&lt;body&gt;&lt;h1&gt;Ошибка: файл шаблона index.html не найден.&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;&quot;)
+
+
+def handle_client(conn):
+    try:
+        request = conn.recv(1024).decode()
+        print(f&quot;Запрос:\n{request}&quot;)
+
+        lines = request.splitlines()
+        if not lines:
+            return
+        request_line = lines[0].split()
+
+        if len(request_line) &lt; 2:
+            return
+
+        method = request_line[0]
+        path = request_line[1]
+
+        if method == 'GET' and path == '/':
+            html_template = load_html_template()
+            grades_list = &quot;&quot;.join(
+                f&quot;&lt;li&gt;{item['subject']}: {', '.join(item['grades'])}&lt;/li&gt;&quot;
+                for item in grades
+            )
+            response_html = html_template.replace('&lt;ul id=&quot;grades-list&quot;&gt;&lt;/ul&gt;', f'&lt;ul id=&quot;grades-list&quot;&gt;{grades_list}&lt;/ul&gt;')
+
+            response = &quot;HTTP/1.1 200 OK\n&quot;
+            response += &quot;Content-Type: text/html; charset=utf-8\n&quot;
+            response += &quot;Connection: close\n\n&quot;
+            response += response_html
+            conn.sendall(response.encode())
+
+        elif method == 'POST' and path == '/':
+            body = lines[-1]
+            print(f&quot;Тело POST-запроса: {body}&quot;)
+
+            params = parse_qs(body)
+            subject = params.get('subject', [''])[0].strip()
+            grade = params.get('grade', [''])[0].strip()
+
+            if subject and grade:
+                existing_item = next((item for item in grades if item['subject'] == subject), None)
+                if existing_item:
+                    existing_item['grades'].append(grade)
+                else:
+                    grades.append({&quot;subject&quot;: subject, &quot;grades&quot;: [grade]})
+
+                response = &quot;HTTP/1.1 303 See Other\n&quot;
+                response += &quot;Location: /\n&quot;
+                response += &quot;Connection: close\n\n&quot;
+                conn.sendall(response.encode())
+            else:
+                response = &quot;HTTP/1.1 400 Bad Request\n&quot;
+                response += &quot;Content-Type: text/html; charset=utf-8\n&quot;
+                response += &quot;Connection: close\n\n&quot;
+                response += &quot;&lt;html&gt;&lt;body&gt;&lt;h1&gt;Неверные параметры!&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;&quot;
+                conn.sendall(response.encode())
+
+        else:
+            response = &quot;HTTP/1.1 404 Not Found\n&quot;
+            response += &quot;Content-Type: text/html; charset=utf-8\n&quot;
+            response += &quot;Connection: close\n\n&quot;
+            response += &quot;&lt;html&gt;&lt;body&gt;&lt;h1&gt;Страница не найдена&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;&quot;
+            conn.sendall(response.encode())
+
+    except Exception as e:
+        print(f&quot;Ошибка обработки запроса: {e}&quot;)
+    finally:
+        conn.close()
+
+
+def start_server():
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.bind(('localhost', 8080))
+    server_socket.listen(5)
+
+    print(&quot;Сервер запущен. Ожидание подключений на http://localhost:8080&quot;)
+
+    try:
+        while True:
+            conn, addr = server_socket.accept()
+            print(f&quot;Подключен: {addr}&quot;)
+            handle_client(conn)
+    except KeyboardInterrupt:
+        print(&quot;\nСервер остановлен вручную.&quot;)
+    finally:
+        server_socket.close()
+        print(&quot;Сервер закрыт.&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    start_server()
+</code></pre>
+<h2 id="_3">Как работает</h2>
+<p>Запросы выполнял с помощью Postman'a</p>
+<p><img alt="alt text" src="../1.png" /></p></p>
     </article>
 </section>
             <!-- endblock -->
